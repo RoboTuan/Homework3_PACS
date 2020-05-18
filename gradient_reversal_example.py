@@ -39,7 +39,7 @@ class ReverseLayerF(Function):
 class RandomNetworkWithReverseGrad(nn.Module):
     # Changed **kwargs to num_classes, see if it's correct
     # kwargs = {'num_classes':7, 'num_domain_classes':2}
-    def __init__(self, **kwargs):
+    def __init__(self, num_classes=1000):
 
         super(RandomNetworkWithReverseGrad, self).__init__()
         self.features = nn.Sequential(
@@ -67,7 +67,7 @@ class RandomNetworkWithReverseGrad(nn.Module):
             nn.Dropout(),
             nn.Linear(4096, 4096),
             nn.ReLU(inplace=True),
-            nn.Linear(4096, kwargs['num_classes']),
+            nn.Linear(4096, num_classes),
         )
 
         self.dann_classifier = nn.Sequential(
@@ -77,7 +77,7 @@ class RandomNetworkWithReverseGrad(nn.Module):
             nn.Dropout(),
             nn.Linear(4096, 4096),
             nn.ReLU(inplace=True),
-            nn.Linear(4096, kwargs['num_domain_classes']),
+            nn.Linear(4096, num_classes),
         )
 
     def forward(self, x, alpha=None):
@@ -110,5 +110,15 @@ def alexnetDANN(pretrained=False, progress=True, **kwargs):
     if pretrained:
         state_dict = load_state_dict_from_url(model_urls['alexnet'], progress=progress)
         model.load_state_dict(state_dict, strict=False)
+
+    model.classifier[6] = nn.Linear(4096, kwargs['num_classes'])
+    model.dann_classifier[6] = nn.Linear(4096, kwargs['num_domain_classes'])
+
+    model.dann_classifier[0] = model.classifier[0]
+    model.dann_classifier[1] = model.classifier[1]
+    model.dann_classifier[2] = model.classifier[2]
+    model.dann_classifier[3] = model.classifier[3]
+    model.dann_classifier[4] = model.classifier[4]
+    model.dann_classifier[5] = model.classifier[5]
 
     return model
