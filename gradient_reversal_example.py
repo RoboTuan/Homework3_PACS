@@ -108,7 +108,7 @@ def alexnetDANN(pretrained=False, progress=True, **kwargs):
     model = RandomNetworkWithReverseGrad(**kwargs)
 
     if pretrained:
-        state_dict = load_state_dict_from_url(model_urls['alexnet'], progress=progress, strict=False)
-        model.load_state_dict(state_dict)
+        state_dict = load_state_dict_from_url(model_urls['alexnet'], progress=progress)
+        model.load_state_dict(state_dict, strict=False)
 
     return model
