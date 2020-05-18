@@ -38,7 +38,7 @@ class ReverseLayerF(Function):
 
 class RandomNetworkWithReverseGrad(nn.Module):
     # Changed **kwargs to num_classes, see if it's correct
-    # kwargs = {'num_classes':7, 'num_domain_classes':2, 'pretrained':True}
+    # kwargs = {'num_classes':7, 'num_domain_classes':2}
     def __init__(self, **kwargs):
 
         super(RandomNetworkWithReverseGrad, self).__init__()
@@ -108,7 +108,7 @@ def alexnetDANN(pretrained=False, progress=True, **kwargs):
     model = RandomNetworkWithReverseGrad(**kwargs)
 
     if pretrained:
-        state_dict = load_state_dict_from_url(model_urls['alexnet'], progress=progress)
+        state_dict = load_state_dict_from_url(model_urls['alexnet'], progress=progress, strict=False)
         model.load_state_dict(state_dict)
 
     return model
