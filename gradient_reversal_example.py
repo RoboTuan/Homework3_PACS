@@ -82,6 +82,9 @@ class RandomNetworkWithReverseGrad(nn.Module):
 
     def forward(self, x, alpha=None):
         features = self.features(x)
+        print(features.size())
+        features = self.avgpool(features)
+        print(features.size())
         # Flatten the features:
         features = features.view(features.size(0), -1)
         # If we pass alpha, we can assume we are training the discriminator
